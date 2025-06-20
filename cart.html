@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>سلة التسوق - GstoreQ8</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="logoapp.jpg">
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Gstore Logo" class="logo">
+    <h1>GstoreQ8</h1>
+    <nav>
+      <a href="index.html">الرئيسية</a>
+      <a href="products.html">المنتجات</a>
+      <a href="cart.html">🛒السلة</a>
+      <a href="about.html">حول</a>
+      <a href="contact.html">تواصل معنا</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>سلة التسوق</h2>
+    <div class="cart-container">
+      <table class="cart-table">
+        <thead>
+          <tr>
+            <th>المنتج</th>
+            <th>الكمية</th>
+            <th>السعر</th>
+            <th>المجموع</th>
+            <th>إزالة</th>
+          </tr>
+        </thead>
+        <tbody id="cart-items">
+          <!-- تُملأ عبر JavaScript -->
+        </tbody>
+      </table>
+      <div class="cart-total">
+        <strong>المجموع الكلي: </strong> 0JD
+      </div>
+      <button class="checkout-btn">إتمام الشراء</button>
+      <button id="clear-cart" class="clear-btn">إفراغ السلة</button>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 Gstoreq8. جميع الحقوق محفوظة.
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+    const tbody = document.getElementById('cart-items');
+    let total = 0;
+
+    function renderCart() {
+      tbody.innerHTML = '';
+      total = 0;
+
+      cartItems.forEach((item, index) => {
+        const row = document.createElement('tr');
+        const subtotal = item.price * item.quantity;
+        total += subtotal;
+
+        row.innerHTML = `
+          <td>${item.name}</td>
+          <td>${item.quantity}</td>
+          <td>${item.price} JD</td>
+          <td>${subtotal} JD</td>
+          <td><button class="remove-btn" data-index="${index}">حذف</button></td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      document.querySelector('.cart-total').innerHTML = `<strong> Total: </strong> ${total} JD`;
+
+      // حذف منتج
+      const removeBtns = document.querySelectorAll('.remove-btn');
+      removeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const index = btn.dataset.index;
+          cartItems.splice(index, 1);
+          localStorage.setItem('cart', JSON.stringify(cartItems));
+          renderCart();
+        });
+      });
+    }
+
+    renderCart();
+
+    // إفراغ السلة
+    document.getElementById('clear-cart').addEventListener('click', () => {
+      if (confirm("هل أنت متأكد من إفراغ السلة؟")) {
+        localStorage.removeItem('cart');
+        cartItems = [];
+        renderCart();
+      }
+    });
+
+    // إتمام الشراء
+    document.querySelector('.checkout-btn').addEventListener('click', () => {
+      if (cartItems.length === 0) {
+        alert("السلة فارغة.");
+      } else {
+        alert("تمت عملية الشراء بنجاح! شكراً لتسوقك.");
+        localStorage.removeItem('cart');
+        cartItems = [];
+        renderCart();
+      }
+    });
+  </script>
+</body>
+</html>
