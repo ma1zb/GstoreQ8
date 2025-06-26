@@ -6,6 +6,7 @@
   <title>منتجاتنا - GstoreQ8</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="icon" href="logoapp.jpg">
+  
 </head>
 <body>
   <header>
@@ -22,9 +23,87 @@
 
   <main>
     <h2>منتجاتنا</h2>
-    
-    <!-- هنا ستُعرض المنتجات القادمة من قاعدة البيانات -->
-    <div id="dynamic-products" class="products-container"></div>
+
+    <!-- الفئة: سماعات -->
+    <div class="category-title">سماعات</div>
+    <div class="products-container">
+      <div class="product">
+        <img src="images/headset.jpg" alt="سماعة رأس">
+        <h3>سماعات الألعاب HyperX Cloud Stinger 2 Core PS</h3>
+        <p>صوت محيطي عالي الجودة</p>
+        <span class="price">JD35 :السعر </span><br>
+        <button class="add-to-cart" data-name="سماعة رأس RGB" data-price="35">🛒 إضافة إلى السلة</button>
+      </div>
+      <div class="product">
+        <img src="images/headset2.jpg" alt="سماعة ألعاب">
+        <h3>سماعات كلاود الفا اس Cloud Alpha S Gaming Headset</h3>
+        <p>مريحة وخفيفة الوزن</p>
+        <span class="price">JD50 :السعر </span><br>
+        <button class="add-to-cart" data-name="سماعة ألعاب Pro" data-price="50">🛒 إضافة إلى السلة</button>
+      </div>
+    </div>
+
+    <!-- الفئة: ماوسات -->
+    <div class="category-title">ماوسات</div>
+    <div class="products-container">
+      <div class="product">
+        <img src="images/mouse.jpg" alt="ماوس RGB">
+        <h3>ماوس RGB</h3>
+        <p>احترافي بإضاءة متعددة</p>
+        <span class="price"> JD10 :السعر  </span><br>
+        <button class="add-to-cart" data-name="ماوس RGB" data-price="10">🛒 إضافة إلى السلة</button>
+      </div>
+      <div class="product">
+        <img src="images/mouse2.jpg" alt="ماوس لاسلكي">
+        <h3>ماوس لاسلكي</h3>
+        <p>بطارية تدوم طويلاً</p>
+        <span class="price">JD15 :السعر </span><br>
+        <button class="add-to-cart" data-name="ماوس لاسلكي" data-price="15">🛒 إضافة إلى السلة</button>
+      </div>
+    </div>
+
+    <!-- الفئة: كيبورد -->
+    <div class="category-title">كيبورد</div>
+    <div class="products-container">
+      <div class="product">
+        <img src="images/keyboard.jpg" alt="كيبورد ميكانيكي">
+        <h3>كيبورد مضيئ للالعاب Meetion k9320</h3>
+        <p>مفاتيح سريعة بإضاءة خلفية</p>
+        <span class="price">JD20 :السعر </span><br>
+        <button class="add-to-cart" data-name="كيبورد ميكانيكي" data-price="20">🛒 إضافة إلى السلة</button>
+      </div>
+      <div class="product">
+        <img src="images/keyboard2.jpg" alt="كيبورد لاسلكي">
+        <h3>كيبورد معدن مضيئة RGP عربية - انجليزية كيبورد جيمينج سلكي من يوتوبيا - اسود</h3>
+        <p>تصميم هادئ وأنيق</p>
+        <span class="price">JD22 :السعر </span><br>
+        <button class="add-to-cart" data-name="كيبورد لاسلكي" data-price="22">🛒 إضافة إلى السلة</button>
+      </div>
+    </div>
+
+    <!-- الفئة: كراسي -->
+    <div class="category-title">كراسي</div>
+    <div class="products-container">
+      <div class="product">
+        <img src="images/chair1.jpg" alt="كرسي ألعاب">
+        <h3>كرسي ألعاب فاخر</h3>
+        <p>راحة طويلة للجلسات</p>
+        <span class="price">JD50 :السعر </span><br>
+        <button class="add-to-cart" data-name="كرسي ألعاب فاخر" data-price="50">🛒 إضافة إلى السلة</button>
+      </div>
+    </div>
+
+    <!-- الفئة: طاولات -->
+    <div class="category-title">طاولات</div>
+    <div class="products-container">
+      <div class="product">
+        <img src="images/table1.jpg" alt="طاولة ألعاب">
+        <h3>طاولة ألعاب LED</h3>
+        <p>إنارة RGB ومساحة واسعة</p>
+        <span class="price">JD70 :السعر </span><br>
+        <button class="add-to-cart" data-name="طاولة ألعاب LED" data-price="70">🛒 إضافة إلى السلة</button>
+      </div>
+    </div>
   </main>
 
   <footer>
@@ -32,31 +111,8 @@
   </footer>
 
   <script>
-async function loadProducts() {
-  try {
-    const response = await fetch('get_products.php');
-    const products = await response.json();
-
-    const container = document.querySelector('.products-container');
-    container.innerHTML = ''; // مسح المحتوى القديم
-
-    products.forEach(product => {
-      const productDiv = document.createElement('div');
-      productDiv.className = 'product';
-
-      productDiv.innerHTML = `
-        <img src="images/${product.Image}" alt="${product.Name}">
-        <h3>${product.Name}</h3>
-        <p>${product.Description}</p>
-        <span class="price">JD${product.Price} :السعر</span><br>
-        <button class="add-to-cart" data-name="${product.Name}" data-price="${product.Price}">🛒 إضافة إلى السلة</button>
-      `;
-
-      container.appendChild(productDiv);
-    });
-
-    // إعادة ربط أزرار "إضافة إلى السلة"
     const buttons = document.querySelectorAll('.add-to-cart');
+
     buttons.forEach(btn => {
       btn.addEventListener('click', () => {
         const name = btn.dataset.name;
@@ -74,15 +130,8 @@ async function loadProducts() {
         alert('تمت إضافة المنتج إلى السلة!');
       });
     });
-
-  } catch (error) {
-    console.error('خطأ في تحميل المنتجات:', error);
-  }
-}
-
-// استدعاء الدالة لتحميل المنتجات عند فتح الصفحة
-loadProducts();
-</script>
-
+  </script>
 </body>
 </html>
+
+
