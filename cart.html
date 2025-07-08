@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>سلة التسوق - GstoreQ8</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="images/logoapp.png">
+</head>
+<body>
+  <header>
+    <img src="images/logo.png" alt="Gstore Logo" class="logo">
+    <h1>GstoreQ8</h1>
+    <nav>
+      <a href="index.html">الرئيسية</a>
+      <a href="products.html">منتجاتنا</a>
+      <a href="cart.html">🛒السلة</a>
+      <a href="about.html">حول</a>
+      <a href="contact.html">تواصل معنا</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>سلة التسوق</h2>
+    <div class="cart-container">
+      <table class="cart-table">
+        <thead>
+          <tr>
+            <th>المنتج</th>
+            <th>الكمية</th>
+            <th>السعر</th>
+            <th>المجموع</th>
+            <th>إزالة</th>
+          </tr>
+        </thead>
+        <tbody id="cart-items">
+          <!-- يتم ملؤها عبر JavaScript -->
+        </tbody>
+      </table>
+      <div class="cart-total">
+        <strong>المجموع الكلي:</strong> 0 JD
+      </div>
+      <button class="checkout-btn">إتمام الشراء</button>
+      <button id="clear-cart" class="clear-btn">إفراغ السلة</button>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 GstoreQ8. جميع الحقوق محفوظة
+  </footer>
+
+  <script>
+    let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+    const tbody = document.getElementById('cart-items');
+    let total = 0;
+
+    function renderCart() {
+      tbody.innerHTML = '';
+      total = 0;
+
+      cartItems.forEach((item, index) => {
+        const subtotal = item.price * item.quantity;
+        total += subtotal;
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.name}</td>
+          <td>${item.quantity}</td>
+          <td>${item.price} JD</td>
+          <td>${subtotal} JD</td>
+          <td><button class="remove-btn" data-index="${index}">حذف</button></td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      document.querySelector('.cart-total').innerHTML = `<strong>المجموع الكلي:</strong> ${total} JD`;
+
+      document.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const index = btn.dataset.index;
+          cartItems.splice(index, 1);
+          localStorage.setItem('cart', JSON.stringify(cartItems));
+          renderCart();
+        });
+      });
+    }
+
+    renderCart();
+
+    document.getElementById('clear-cart').addEventListener('click', () => {
+      if (confirm("هل أنت متأكد من إفراغ السلة؟")) {
+        localStorage.removeItem('cart');
+        cartItems = [];
+        renderCart();
+      }
+    });
+
+    document.querySelector('.checkout-btn').addEventListener('click', () => {
+      if (cartItems.length === 0) {
+        alert("السلة فارغة.");
+        return;
+      }
+
+      let orderNumber = parseInt(localStorage.getItem('orderNumber') || '1');
+      const invoiceDate = new Date().toLocaleDateString('ar-EG');
+      let total = 0;
+
+      let invoiceHTML = `
+        <!DOCTYPE html>
+        <html lang="ar">
+        <head>
+          <meta charset="UTF-8">
+          <title>فاتورة الشراء</title>
+           <style>
+    body {
+      font-family: Arial, sans-serif;
+      direction: rtl;
+      padding: 20px;
+      background: #f9f9f9;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .header img {
+      width: 270px;
+      height: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: #fff;
+    }
+    th {
+      background-color: #06d1f5;
+      color: white;
+      font-weight: bold;
+      padding: 10px;
+      border: 1px solid #444;
+      text-align: center;
+    }
+    td {
+      border: 1px solid #444;
+      padding: 10px;
+      text-align: center;
+    }
+    .info {
+      margin-top: 10px;
+      font-size: 18px;
+      color: #333;
+    }
+    h3 {
+      color: #333;
+    }
+    p {
+      text-align: center;
+      font-size: 18px;
+      margin-top: 20px;
+      color: balck;
+    }
+    .btns {
+      text-align: center;
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 28px;
+      font-size: 18px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      user-select: none;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #06d1f5, #0288d1);
+      color: white;
+      box-shadow: 0 6px 12px rgba(6, 209, 245, 0.6);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0288d1, #01579b);
+      box-shadow: 0 8px 16px rgba(6, 209, 245, 0.9);
+    }
+    .close-btn {
+      background: linear-gradient(135deg, #f44336, #d32f2f);
+      color: white;
+      box-shadow: 0 6px 12px rgba(244, 67, 54, 0.6);
+    }
+    .close-btn:hover {
+      background: linear-gradient(135deg, #d32f2f, #b71c1c);
+      box-shadow: 0 8px 16px rgba(244, 67, 54, 0.9);
+    }
+
+    /* إخفاء الأزرار عند الطباعة */
+    @media print {
+      .btns { display: none !important; }
+    }
+  </style>
+        </head>
+        <body>
+          <div class="header">
+            <img src="images/logo.png" alt="شعار المتجر">
+            <h2>GstoreQ8 Store</h2>
+          </div>
+          <div class="info">
+            <strong>رقم الطلب:</strong> ${orderNumber} <br>
+            <strong>تاريخ الفاتورة:</strong> ${invoiceDate}
+          </div>
+
+          <h3 style="text-align:center;">فاتورة الشراء</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>المنتج</th>
+                <th>الكمية</th>
+                <th>سعر الوحدة</th>
+                <th>الإجمالي</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+
+      cartItems.forEach(item => {
+        const subtotal = item.price * item.quantity;
+        total += subtotal;
+        invoiceHTML += `
+          <tr>
+            <td>${item.name}</td>
+            <td>${item.quantity}</td>
+            <td>${item.price} JD</td>
+            <td>${subtotal} JD</td>
+          </tr>
+        `;
+      });
+
+      invoiceHTML += `
+            </tbody>
+          </table>
+          <h3 style="text-align:center;">المجموع الكلي: ${total} JD</h3>
+          <p>شكراً لتسوقك معنا</p>
+          <div class="btns">
+            <button class="btn close-btn" onclick="window.close()">❌ إغلاق</button>
+            <button class="btn print-btn" onclick="window.print()">🖨️ طباعة الفاتورة</button>
+          </div>
+        </body>
+        </html>
+      `;
+
+      const invoiceWindow = window.open('', '_blank', 'width=800,height=600');
+      invoiceWindow.document.open();
+      invoiceWindow.document.write(invoiceHTML);
+      invoiceWindow.document.close();
+
+      // مراقبة إغلاق نافذة الفاتورة
+      const timer = setInterval(() => {
+        if (invoiceWindow.closed) {
+          clearInterval(timer);
+          alert("تم إتمام الطلب بنجاح! رقم طلبك هو: " + orderNumber);
+          localStorage.setItem('orderNumber', orderNumber + 1);
+          localStorage.removeItem('cart');
+          cartItems = [];
+          renderCart();
+        }
+      }, 500);
+    });
+  </script>
+</body>
+</html>
